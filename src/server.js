@@ -13,6 +13,8 @@ import { RateLimiterRedis } from 'rate-limiter-flexible'
 import { RedisStore } from 'rate-limit-redis'
 import { globalErrorHandler } from './middleware/errorHandler.js';
 import cookieParser from 'cookie-parser'
+import router from './routers/user.route.js';
+import dummyRouter from './routers/dummy.route.js';
 
 
 dotenv.config();
@@ -32,13 +34,13 @@ app.use(express.urlencoded({ extended: true }));
 app.use(CorsInitialisation)
 app.use(globalErrorHandler);
 app.use(customMiddleware);
+app.use(ApiVersioning('v1'));
 
 app.use((req, res, next) => {
     logger.info(`Received ${req.method} request for ${req.url}`)
     logger.info(`Request body: ${JSON.stringify(req.body)}`);
     next();
 })
-
 app.use(limiter(10, 10*60*1000));
 
 const rateLimiter = new RateLimiterRedis({
@@ -71,8 +73,11 @@ const sensitiveEndpointRateLimiter = rateLimit({
     })
 })
 
-app.use('/api/auth/register', sensitiveEndpointRateLimiter);
-app.use('/api/auth/login', sensitiveEndpointRateLimiter);
+// app.use('/api/v1/auth/register', sensitiveEndpointRateLimiter);
+// app.use('/api/v1/auth/login', sensitiveEndpointRateLimiter);
+
+app.use('/api/v1/auth', router);
+app.use('/api/v1', dummyRouter);
 
 app.listen(PORT, () => {
     logger.info('Server is running on port 3000');
