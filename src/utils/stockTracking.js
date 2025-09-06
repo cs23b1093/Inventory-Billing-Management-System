@@ -5,7 +5,7 @@ import { ApiError } from "./errorFormat.js";
 const updateStockOnSale = async (products) => {
     try {
         for (const item of products) {
-            const product = await Product.findById(item._id);
+            const product = await Product.findById(item.productId);
             if (!product) {
                 logger.error(`Product with id ${item._id} not found`);
                 const apiError = new ApiError({ message: `Product with id ${item._id} not found`, status: 404 })
@@ -20,12 +20,18 @@ const updateStockOnSale = async (products) => {
 
             product.stock -= item.quantity;
             await product.save();
+            return { message: "Stock updated successfully",
+                product,
+                statusCode: 200,
+                success: true
+            }
         }
     } catch (error) {
         logger.error(`Update stock on sale failed: ${error.message}`);
         return { message: "Internal Server Error",
             error: error.message,
-            statusCode: 500
+            statusCode: 500,
+            success: false
         }
     }
 }
@@ -52,4 +58,4 @@ const updateStockOnPurchase = async (products) => {
     }
 }
 
-export { updateStockOnSale };
+export { updateStockOnSale, updateStockOnPurchase };

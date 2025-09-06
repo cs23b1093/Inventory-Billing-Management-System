@@ -1,0 +1,7 @@
+src/controllers/product.controller.js
+src/controllers/stackHolder.controller.js
+src/models/stakeHolder.model.js
+src/routers/stackHolder.route.js
+src/server.js
+src/utils/stackHolder.validate.js
+src/utils/stockTracking.js
