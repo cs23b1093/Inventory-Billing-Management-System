@@ -7,15 +7,17 @@ import generateToken from '../utils/genrateToken.js';
 
 const registerUser = asyncHandler(async (req, res, next) => {
     try {
-        logger.info('hit register user...');
-        const error = validateNewUserData(req.body);
+        const { error } = validateNewUserData(req.body);
         if (error) {
-            logger.error(error.message);
-            const apiError = new ApiError({ message: error.message, status: 400, error: error })
-            return res.status(400).json({
-                ...apiError 
-            })
+            logger.error(error.details.map(d => d.message).join(", "));
+            const apiError = new ApiError({ 
+                message: error.details[0].message, 
+                status: 400, 
+                error 
+            });
+            return res.status(400).json(apiError);
         }
+
         
         const { username, email, password } = req.body;
 
@@ -59,13 +61,15 @@ const registerUser = asyncHandler(async (req, res, next) => {
 
 const loginUser = asyncHandler(async (req, res, next) => {
     try {
-        const error = validateLoginData(req.body);
+        const { error } = validateLoginData(req.body);
         if (error) {
-            logger.error(error.details[0].message);
-            const apiError = new ApiError({ message: error.details[0].message, status: 400, error: error })
-            return res.status(400).json({
-                ...apiError 
-            })
+            logger.error(error.details.map(d => d.message).join(", "));
+            const apiError = new ApiError({ 
+                message: error.details[0].message, 
+                status: 400, 
+                error 
+            });
+            return res.status(400).json(apiError);
         }
 
         const { username, password } = req.body;

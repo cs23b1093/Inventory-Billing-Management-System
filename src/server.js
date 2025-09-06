@@ -13,8 +13,9 @@ import { RateLimiterRedis } from 'rate-limiter-flexible'
 import { RedisStore } from 'rate-limit-redis'
 import { globalErrorHandler } from './middleware/errorHandler.js';
 import cookieParser from 'cookie-parser'
-import router from './routers/user.route.js';
+import userRouter from './routers/user.route.js';
 import dummyRouter from './routers/dummy.route.js';
+import productRouter from './routers/product.route.js';
 
 
 dotenv.config();
@@ -73,10 +74,12 @@ const sensitiveEndpointRateLimiter = rateLimit({
     })
 })
 
-// app.use('/api/v1/auth/register', sensitiveEndpointRateLimiter);
-// app.use('/api/v1/auth/login', sensitiveEndpointRateLimiter);
+app.use('/api/v1/auth/register', sensitiveEndpointRateLimiter);
+app.use('/api/v1/auth/login', sensitiveEndpointRateLimiter);
+app.use('/api/v1/products/create', sensitiveEndpointRateLimiter);
 
-app.use('/api/v1/auth', router);
+app.use('/api/v1/auth', userRouter);
+app.use('/api/v1/products', productRouter);
 app.use('/api/v1', dummyRouter);
 
 app.listen(PORT, () => {
