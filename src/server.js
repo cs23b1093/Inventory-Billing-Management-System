@@ -16,6 +16,7 @@ import cookieParser from 'cookie-parser'
 import userRouter from './routers/user.route.js';
 import dummyRouter from './routers/dummy.route.js';
 import productRouter from './routers/product.route.js';
+import stackHolderRouter from './routers/stackHolder.route.js';
 
 
 dotenv.config();
@@ -37,7 +38,7 @@ app.use(globalErrorHandler);
 app.use(customMiddleware);
 app.use(ApiVersioning('v1'));
 
-app.use((req, res, next) => {
+app.use((req, _, next) => {
     logger.info(`Received ${req.method} request for ${req.url}`)
     logger.info(`Request body: ${JSON.stringify(req.body)}`);
     next();
@@ -77,9 +78,15 @@ const sensitiveEndpointRateLimiter = rateLimit({
 app.use('/api/v1/auth/register', sensitiveEndpointRateLimiter);
 app.use('/api/v1/auth/login', sensitiveEndpointRateLimiter);
 app.use('/api/v1/products/create', sensitiveEndpointRateLimiter);
+app.use('/api/v1/products/update', sensitiveEndpointRateLimiter);
+app.use('/api/v1/products/delete', sensitiveEndpointRateLimiter);
+app.use('/api/v1/stackHolder/create', sensitiveEndpointRateLimiter);
+app.use('/api/v1/stackHolder/update', sensitiveEndpointRateLimiter);
+app.use('/api/v1/stackHolder/delete', sensitiveEndpointRateLimiter)
 
 app.use('/api/v1/auth', userRouter);
 app.use('/api/v1/products', productRouter);
+app.use('/api/v1/stackHolder', stackHolderRouter);
 app.use('/api/v1', dummyRouter);
 
 app.listen(PORT, () => {

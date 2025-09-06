@@ -181,10 +181,55 @@ const getAllProducts = asyncHandler(async (_, res, next) => {
     }
 })
 
+const searchProducts = asyncHandler(async (req, res, next) => {
+    try {
+        const { query } = req.query;
+        if (!query) {
+            return res.status(400).json({
+                message: 'Query not provided'
+            })
+        }
+
+        const products = await Product.find({
+            $or: [
+                { name: { $regex: query, $options: 'i' } },
+                { description: { $regex: query, $options: 'i' } },
+                { price: { $regex: query, $options: 'i' } },
+                { category: { $regex: query, $options: 'i' } },
+                { stock: { $regex: query, $options: 'i' } },
+                { businessId: { $regex: query, $options: 'i' } }
+            ]
+        })
+        if (!products) {
+            logger.error('products not found');
+            const apiError = new ApiError({ message: 'Products not found', status: 404 })
+            return res.status(404).json({
+                ...apiError,
+                message: 'Products not found'
+            })
+        }
+        
+        logger.info('products found');
+        res.status(201).json({
+            message: 'Products found successfully',
+            products
+        })
+    } catch (error) {
+        logger.error(`Search products failed: unexpected error: ${error.message}}`, {
+            errorMessage: error?.message,
+            stack: error?.stack,
+        }) 
+        res.status(500).json({
+            message: `Internal server error while searching products: ${error.message}}`
+        })
+    }
+})
+
 export {
     createProduct,
     editProduct,
     deleteProduct,
     getProduct,
-    getAllProducts
+    getAllProducts,
+    searchProducts
 }
