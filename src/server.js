@@ -2,7 +2,6 @@ import dotenv from 'dotenv';
 import express from 'express';
 import { customMiddleware } from './middleware/customMiddleware.js';
 import dbConnect from './config/dbConnect.js';
-import { ApiVersioning } from './middleware/apiVersioning.js';
 import { CorsInitialisation } from './utils/corsSetup.js';
 import { generalRateLimiter, sensitiveRateLimiter } from './middleware/rateLimiter.js';
 import helmet from 'helmet';
@@ -29,7 +28,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use(CorsInitialisation)
 app.use(globalErrorHandler);
 app.use(customMiddleware);
-app.use(ApiVersioning('v1'));
 
 app.use((req, _, next) => {
     logger.info(`Received ${req.method} request for ${req.url}`)
