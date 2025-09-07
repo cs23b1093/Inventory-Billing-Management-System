@@ -1,0 +1,349 @@
+{
+  "info": {
+    "_postman_id": "f0f5f3b8-6b7a-44a3-9b2a-5d8e2d9cf001",
+    "name": "Inventory Management API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Postman collection for Inventory Management API. Use {{baseUrl}} and {{jwt}} variables."
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/register",
+              "host": [ "{{baseUrl}}" ],
+              "path": [ "auth", "register" ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"Passw0rd!\",\n  \"name\": \"Test User\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [ "{{baseUrl}}" ],
+              "path": [ "auth", "login" ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"Passw0rd!\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Logout (protected)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{jwt}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/logout",
+              "host": [ "{{baseUrl}}" ],
+              "path": [ "auth", "logout" ]
+            }
+          }
+        },
+        {
+          "name": "Get User (protected)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{jwt}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/user/:userId",
+              "host": [ "{{baseUrl}}" ],
+              "path": [ "auth", "user", ":userId" ],
+              "variable": [
+                { "key": "userId", "value": "<replace-user-id>" }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Products",
+      "item": [
+        {
+          "name": "Create Product (protected)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{jwt}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/products/create",
+              "host": [ "{{baseUrl}}" ],
+              "path": [ "products", "create" ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Widget\",\n  \"sku\": \"W-1\",\n  \"quantity\": 10,\n  \"price\": 99.99\n}"
+            }
+          }
+        },
+        {
+          "name": "Get All Products",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/products/all",
+              "host": [ "{{baseUrl}}" ],
+              "path": [ "products", "all" ]
+            }
+          }
+        },
+        {
+          "name": "Get Product by ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/products/get/:productId",
+              "host": [ "{{baseUrl}}" ],
+              "path": [ "products", "get", ":productId" ],
+              "variable": [
+                { "key": "productId", "value": "<replace-product-id>" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Product (protected)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{jwt}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/products/update/:productId",
+              "host": [ "{{baseUrl}}" ],
+              "path": [ "products", "update", ":productId" ],
+              "variable": [
+                { "key": "productId", "value": "<replace-product-id>" }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Widget Pro\",\n  \"quantity\": 20\n}"
+            }
+          }
+        },
+        {
+          "name": "Delete Product (protected)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{jwt}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/products/delete/:productId",
+              "host": [ "{{baseUrl}}" ],
+              "path": [ "products", "delete", ":productId" ],
+              "variable": [
+                { "key": "productId", "value": "<replace-product-id>" }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "StakeHolder",
+      "item": [
+        {
+          "name": "Create StakeHolder (protected)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{jwt}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/stackHolder/create",
+              "host": [ "{{baseUrl}}" ],
+              "path": [ "stackHolder", "create" ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Acme Corp\",\n  \"email\": \"contact@acme.com\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Update StakeHolder (protected)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{jwt}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/stackHolder/update/:stackHolderId",
+              "host": [ "{{baseUrl}}" ],
+              "path": [ "stackHolder", "update", ":stackHolderId" ],
+              "variable": [
+                { "key": "stackHolderId", "value": "<replace-stakeholder-id>" }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Acme International\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Delete StakeHolder (protected)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{jwt}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/stackHolder/delete/:stackHolderId",
+              "host": [ "{{baseUrl}}" ],
+              "path": [ "stackHolder", "delete", ":stackHolderId" ],
+              "variable": [
+                { "key": "stackHolderId", "value": "<replace-stakeholder-id>" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get StakeHolder (protected)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{jwt}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/stackHolder/get/:stackHolderId",
+              "host": [ "{{baseUrl}}" ],
+              "path": [ "stackHolder", "get", ":stackHolderId" ],
+              "variable": [
+                { "key": "stackHolderId", "value": "<replace-stakeholder-id>" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get All StakeHolders (protected)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{jwt}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/stackHolder/all",
+              "host": [ "{{baseUrl}}" ],
+              "path": [ "stackHolder", "all" ]
+            }
+          }
+        },
+        {
+          "name": "Search StakeHolders (protected)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{jwt}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/stackHolder/search",
+              "host": [ "{{baseUrl}}" ],
+              "path": [ "stackHolder", "search" ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Transition",
+      "item": [
+        {
+          "name": "Create Transition",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/transition/create",
+              "host": [ "{{baseUrl}}" ],
+              "path": [ "transition", "create" ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"productId\": \"<replace-product-id>\",\n  \"type\": \"IN\",\n  \"quantity\": 5\n}"
+            }
+          }
+        },
+        {
+          "name": "Get All Transitions",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/transition/all",
+              "host": [ "{{baseUrl}}" ],
+              "path": [ "transition", "all" ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Reports (protected)",
+      "item": [
+        {
+          "name": "Inventory Report",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{jwt}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/reports/inventory",
+              "host": [ "{{baseUrl}}" ],
+              "path": [ "reports", "inventory" ]
+            }
+          }
+        },
+        {
+          "name": "Transaction Report",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{jwt}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/reports/transaction",
+              "host": [ "{{baseUrl}}" ],
+              "path": [ "reports", "transaction" ]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:3000/api/v1" },
+    { "key": "jwt", "value": "" }
+  ]
+}
