@@ -3,6 +3,32 @@ import { ApiError } from "../utils/errorFormat.js";
 import { asyncHandler } from "../middleware/errorHandler.js";
 import { Product } from '../models/product.model.js';
 import { validateNewProduct } from "../utils/product.validate.js";
+// import redis from "../config/redisClient.js"; // Redis disabled for now
+
+// Redis helper functions (commented for review purpose)
+// // Build cache keys for product resources
+// const keyGenerate = (prefix, operation) => {
+//     return `${prefix}:${operation}`
+// }
+
+// // Delete keys in batches that match a pattern
+// const deleteByPattern = async (pattern) => {
+//     let cursor = '0'
+//     do {
+//         const scanResult = await redis.scan(cursor, 'MATCH', pattern, 'COUNT', 100)
+//         cursor = scanResult[0]
+//         const keys = scanResult[1]
+//         if (keys.length) {
+//             await redis.del(...keys)
+//         }
+//     } while (cursor !== '0')
+// }
+
+// // Invalidate product caches after writes
+// const deleteFromCache = async () => {
+//     await deleteByPattern('products:*')
+//     await deleteByPattern('product:*')
+// }
 
 const createProduct = asyncHandler(async (req, res, next) => {
     try {
@@ -21,6 +47,8 @@ const createProduct = asyncHandler(async (req, res, next) => {
 
         const newProduct = new Product(req.body);
         await newProduct.save();
+
+        // await deleteFromCache(); // Redis cache invalidation disabled
         logger.info('product created');
         res.status(201).json({
             message: 'Product created successfully',
@@ -73,6 +101,8 @@ const editProduct = asyncHandler(async (req, res, next) => {
 
         Object.assign(product, req.body);
         await product.save();
+
+        // await deleteFromCache(); // Redis cache invalidation disabled
         logger.info('product updated');
         res.status(200).json({
             message: 'Product updated successfully',
@@ -113,6 +143,7 @@ const deleteProduct = asyncHandler(async (req, res, next) => {
         }
 
         await product.deleteOne();
+        // await deleteFromCache(); // Redis cache invalidation disabled
         logger.info('product deleted');
         res.status(200).json({
             message: 'Product deleted successfully'
@@ -140,6 +171,18 @@ const getProduct = asyncHandler(async (req, res, next) => {
             })
         }
 
+        // Redis cache lookup disabled
+        // const cacheKey = keyGenerate('product', productId);
+        // const cached = await redis.get(cacheKey);
+        // if (cached) {
+        //     const product = JSON.parse(cached)
+        //     logger.info('product found (from cache)');
+        //     return res.status(200).json({
+        //         message: 'Product found successfully',
+        //         product
+        //     })
+        // }
+
         const product = await Product.findById(productId);
         if (!product) {
             logger.error('product not found');
@@ -148,7 +191,7 @@ const getProduct = asyncHandler(async (req, res, next) => {
             })
         }
 
-        logger.info('product found');
+        //  await redis.set(cacheKey, JSON.stringify(product), 'EX', 300)
         res.status(200).json({
             message: 'Product found successfully',
             product
@@ -168,7 +211,27 @@ const getAllProducts = asyncHandler(async (_, res, next) => {
     try {
         logger.info('hit get all products...');
 
+        // Redis cache lookup disabled
+        // const key = keyGenerate('products', 'all');
+        // const cacheProd = await redis.get(key);
+        // if (cacheProd) {
+        //     logger.info('products found in cache');
+        //     const products = JSON.parse(cacheProd);
+        //     return res.status(200).json({
+        //         message: 'Products found successfully',
+        //         products
+        //     })
+        // }
+
         const products = await Product.find();
+        if (!products) {
+            logger.error('products not found');
+            return res.status(404).json({
+                message: 'Products not found'
+            })
+        }
+
+        // 🔒 await redis.set(key, JSON.stringify(products), 'EX', 300);
         res.status(200).json({
             message: 'Products found successfully',
             products
@@ -210,7 +273,7 @@ const searchProducts = asyncHandler(async (req, res, next) => {
         }
         
         logger.info('products found');
-        res.status(201).json({
+        res.status(200).json({
             message: 'Products found successfully',
             products
         })
